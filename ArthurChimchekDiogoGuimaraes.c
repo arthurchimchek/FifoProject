@@ -8,6 +8,7 @@
 #include<stdlib.h>
 #include<conio.h>
 #include<stdbool.h>
+#include<time.h>
 
 typedef struct nodeQueue {
 	int value;
@@ -26,6 +27,8 @@ void printQueue(node **firstNode);
 void execute(int fileNumber, int totalPages);
 
 void main() {
+	clock_t start = clock();
+	
 	execute(1, 4);
 	execute(2, 4);
 	execute(3, 64);
@@ -37,10 +40,15 @@ void main() {
 	execute(4, 1024);
 	execute(4, 2048);
 
+	clock_t end = clock();
+	double seconds = (double)(end - start)/CLOCKS_PER_SEC;
+	printf("Total time: %f", seconds);
 	scanf("");
 }
 
 void execute(int fileNumber, int totalPages) {
+	clock_t startTime = clock();
+	
 	char fileName[15];
 	sprintf(fileName, "tests/file%d.txt", fileNumber);
 	
@@ -105,8 +113,12 @@ void execute(int fileNumber, int totalPages) {
 		//printQueue(&firstNode);
 		page = page->next;
 	}
+	
+	clock_t endTime = clock();
+	double timeTaken = (double)(endTime - startTime)/CLOCKS_PER_SEC;
 
-	printf("Arquivo %d, %5d paginas, %7d requisicoes: FIFO: %5d Page Faults\n", fileNumber, totalPages, getQueueSize(&startPage), pageFaults);
+	printf("Arquivo %d, %5d paginas, %7d requisicoes: FIFO: %5d Page Faults", fileNumber, totalPages, getQueueSize(&startPage), pageFaults);
+	printf(". Time: %f\n", timeTaken);
 }
 
 bool queueHasValue(node **firstNode, int value) {
